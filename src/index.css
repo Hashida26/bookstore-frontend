@@ -1,0 +1,63 @@
+/* Load Tailwind (all layers) */
+@import "tailwindcss";
+body {
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* TITLE */
+.dc-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  animation: dcFadeUp 0.9s ease forwards;
+}
+
+/* SUBTITLE */
+.dc-subtitle {
+  margin-top: 1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: #e5e7eb;
+  animation: dcFadeUp 0.9s ease forwards;
+  animation-delay: 0.15s;
+}
+
+/* BUTTON */
+.dc-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.75rem;
+  background: #2f855a;
+  border-radius: 999px;
+  font-weight: 600;
+  animation: dcFadeUp 0.9s ease forwards;
+  animation-delay: 0.3s;
+}
+
+.dc-button:hover {
+  background: #276749;
+}
+
+/* ANIMATION */
+@keyframes dcFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes quoteFade {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-quoteFade {
+  animation: quoteFade 0.9s ease-in-out;
+}
