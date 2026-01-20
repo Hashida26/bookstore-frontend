@@ -17,10 +17,14 @@ export default function Navbar() {
   const { user, setUser } = useContext(AuthContext);
   const role = localStorage.getItem("role");
 
+  /* ================= HELPERS ================= */
+  const closeSidebar = () => setIsSidebarOpen(false);
+
   const logout = () => {
     localStorage.clear();
     setUser(null);
     setShowProfileMenu(false);
+    closeSidebar();
     navigate("/login");
   };
 
@@ -41,7 +45,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ================= TOP BAR ================= */}
+      {/*  TOP BAR  */}
       <div className="w-full bg-[#99ca3b] text-white text-xs md:text-sm py-2 px-[5%] flex justify-between sticky top-0 z-50">
         <p className="font-medium">📞 Toll Free: 1800-425-1234</p>
 
@@ -50,17 +54,15 @@ export default function Navbar() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setShowProfileMenu((p) => !p)}
-                className="flex items-center gap-2 font-semibold hover:text-gray-200"
+                className="flex items-center gap-2 font-semibold"
               >
                 <User size={18} />
                 {user}
               </button>
 
-              {/* PROFILE DROPDOWN */}
               <div
-                className={`absolute right-0 mt-3 w-52 bg-white text-gray-700
-                rounded-md shadow-xl z-[999] transition-all duration-200
-                ${showProfileMenu ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
+                className={`absolute right-0 mt-3 w-52 bg-white text-gray-700 rounded-md shadow-xl z-[999]
+                transition-all ${showProfileMenu ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
               >
                 {role === "user" && (
                   <>
@@ -104,32 +106,21 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ================= MAIN NAVBAR ================= */}
-      <nav className="w-full bg-white border-b sticky top-[36px] z-40">
+      {/*  MAIN NAVBAR */}
+      <nav className="w-full bg-white border-b sticky top-[36px] z-30">
         <div className="flex items-center justify-between px-[5%] py-3">
           <button className="md:hidden" onClick={() => setIsSidebarOpen(true)}>
             <Menu size={28} />
           </button>
 
-          {/* LOGO + BRAND NAME */}
-         <Link to="/" className="flex items-center gap-3">
-  <img
-    src={logo}
-    alt="PENTIP Online Bookstore"
-    className="w-12 h-12 object-contain"
-  />
-
-  <div className="leading-tight">
-    <span className="font-extrabold text-xl tracking-wide text-gray-800">
-      PEN<span className="text-[#99ca3b]">TIP</span>
-    </span>
-    <p className="text-[11px] text-gray-500 font-medium">
-      Online Bookstore
-    </p>
-  </div>
-</Link>
-
-          
+          <Link to="/" className="flex items-center gap-3">
+            <div>
+              <span className="font-extrabold text-xl">
+                PEN<span className="text-[#99ca3b]">TIP</span>
+              </span>
+              <p className="text-[11px] text-gray-500">Online Bookstore</p>
+            </div>
+          </Link>
 
           <div className="hidden md:flex w-[40%]">
             <SearchBar />
@@ -150,48 +141,126 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ================= DESKTOP LINKS BAR ================= */}
-      <div className="hidden md:flex w-full bg-white sticky top-[96px] z-30 border-b">
-        <div className="max-w-7xl mx-auto w-full px-12 py-4 flex justify-between text-gray-600 font-semibold">
-          <Link to="/">Home</Link>
-          <Link to="/books">Books</Link>
-          <Link to="/categories">Categories</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
-        </div>
-      </div>
-
-      {/* ================= MOBILE SIDEBAR ================= */}
-      {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/40 z-[1000]" onClick={() => setIsSidebarOpen(false)}>
-          <div className="w-[75%] h-full bg-white p-6" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setIsSidebarOpen(false)}>
-              <X size={28} />
+      {/* ================= MOBILE SEARCH ================= */}
+      {showMobileSearch && (
+        <div
+          className="fixed inset-0 bg-black/40 z-[9999] flex items-start justify-center pt-24 md:hidden"
+          onClick={() => setShowMobileSearch(false)}
+        >
+          <div
+            className="bg-white w-[90%] rounded-xl p-4 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-3 top-3"
+              onClick={() => setShowMobileSearch(false)}
+            >
+              <X size={22} />
             </button>
 
-            <div className="flex flex-col gap-6 text-lg mt-6">
-              <Link to="/">Home</Link>
-              <Link to="/books">Books</Link>
-              <Link to="/categories">Categories</Link>
-
-              {user ? (
-                <>
-                  {role === "admin" && <Link to="/admin/dashboard">Admin Dashboard</Link>}
-                  <button onClick={logout} className="text-left text-red-500">
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <Link to="/login">Login</Link>
-              )}
-            </div>
+            <SearchBar onSelect={() => setShowMobileSearch(false)} />
           </div>
         </div>
       )}
 
+      {/* ================= MOBILE SIDEBAR ================= */}
+     
+       
+     {/* ================= MOBILE SIDEBAR (COMPACT + PASTEL) ================= */}
+{isSidebarOpen && (
+  <div
+    className="fixed inset-0 bg-black/40 z-[1000] flex items-start justify-center pt-24"
+    onClick={closeSidebar}
+  >
+    <div
+      className="w-[85%] max-w-[280px] bg-[#f9fafb] rounded-2xl shadow-xl
+      border border-gray-200"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+        <p className="font-semibold text-gray-800 text-sm">
+          {user ? `Hi, ${user}` : "Menu"}
+        </p>
+        <button onClick={closeSidebar}>
+          <X size={18} />
+        </button>
+      </div>
+
+      {/* LINKS */}
+      <div className="flex flex-col px-2 py-2 text-gray-700 text-sm">
+        <Link
+          to="/"
+          onClick={closeSidebar}
+          className="px-3 py-2.5 rounded-lg hover:bg-gray-100"
+        >
+          Home
+        </Link>
+
+        <Link
+          to="/books"
+          onClick={closeSidebar}
+          className="px-3 py-2.5 rounded-lg hover:bg-gray-100"
+        >
+          Books
+        </Link>
+
+        <Link
+          to="/categories"
+          onClick={closeSidebar}
+          className="px-3 py-2.5 rounded-lg hover:bg-gray-100"
+        >
+          Categories
+        </Link>
+
+        {user && role === "admin" && (
+          <Link
+            to="/admin/dashboard"
+            onClick={closeSidebar}
+            className="px-3 py-2.5 rounded-lg hover:bg-gray-100
+            text-indigo-600 font-medium"
+          >
+            Admin Dashboard
+          </Link>
+        )}
+      </div>
+
+      {/* FOOTER */}
+      <div className="border-t border-gray-200 px-2 py-2">
+        {user ? (
+          <button
+            onClick={logout}
+            className="w-full text-left px-3 py-2.5 rounded-lg
+            text-red-500 hover:bg-red-50 text-sm"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            onClick={closeSidebar}
+            className="block px-3 py-2.5 rounded-lg hover:bg-gray-100 text-sm"
+          >
+            Login
+          </Link>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
+
+    
+          
+    
+
+     
+          
+
+
       {/* ================= MOBILE BOTTOM NAV ================= */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-[#99ca3b] text-white py-2 flex justify-around z-50">
-        <Search size={26} />
+        <Search size={26} onClick={() => setShowMobileSearch(true)} />
         <Link to="/cart" className="relative">
           <ShoppingCart size={26} />
           {cartCount > 0 && (

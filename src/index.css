@@ -61,3 +61,16 @@ body {
 .animate-quoteFade {
   animation: quoteFade 0.9s ease-in-out;
 }
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.25s ease-out forwards;
+}
+
