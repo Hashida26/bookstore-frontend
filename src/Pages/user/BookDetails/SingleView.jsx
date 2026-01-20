@@ -60,7 +60,8 @@ export default function Singleview() {
           {/* LEFT IMAGE */}
           <div className="flex justify-center">
             <img
-              src={`http://localhost:5000${book.image}`}
+              src={book.image}
+
 
               alt={book.title}
               className="w-[260px] md:w-[320px] object-contain shadow-xl"
