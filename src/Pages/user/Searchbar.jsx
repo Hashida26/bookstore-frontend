@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { X } from "lucide-react";
 import API from "../../config/api";
 
 /**
@@ -50,11 +50,11 @@ export default function SearchBar({ onSelect }) {
   const goToBook = (bookId) => {
     navigate(`/book/${bookId}`);
     setQuery("");
-    onSelect?.(); // ✅ auto-close mobile search if provided
+    onSelect?.(); // auto-close mobile search if provided
   };
 
   return (
-    <div className="relative w-full z-[9999]">
+    <div className="relative w-full z-9999">
       {/* ================= SEARCH INPUT ================= */}
       <input
         type="text"
@@ -66,17 +66,32 @@ export default function SearchBar({ onSelect }) {
           }
         }}
         placeholder="Search books…"
-        className="w-full border border-gray-300 rounded-full py-2 px-4 pr-10
-        text-sm focus:ring-2 focus:ring-[#99ca3b] outline-none"
+        className="w-full border border-gray-300 bg-[#f9fafb]
+        rounded-full py-2 px-4 pr-10 text-sm
+        focus:ring-2 focus:ring-[#99ca3b] outline-none"
       />
 
-      <Search className="absolute right-4 top-2.5 text-gray-500" />
+      {/* CLEAR (CLOSE) ICON INSIDE INPUT */}
+      {query && (
+        <button
+          onClick={() => {
+            setQuery("");
+            onSelect?.(); // optional: close mobile overlay
+          }}
+          className="absolute right-3 top-2 flex items-center justify-center
+          w-6 h-6 rounded-full bg-gray-200 text-gray-600
+          hover:bg-gray-300 active:bg-gray-400"
+        >
+          <X size={14} />
+        </button>
+      )}
 
       {/* ================= SEARCH RESULTS ================= */}
       {query && (
         <div
-          className="absolute top-11 left-0 w-full bg-white shadow-xl
-          rounded-lg z-[9999] max-h-64 overflow-y-auto"
+          className="absolute top-11 left-0 w-full bg-[#f9fafb]
+          shadow-xl rounded-xl z-[9999] max-h-64 overflow-y-auto
+          border border-gray-200"
         >
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book) => {

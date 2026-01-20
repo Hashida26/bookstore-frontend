@@ -135,9 +135,12 @@ export default function Navbar() {
             )}
           </Link>
 
-          <button onClick={() => setShowMobileSearch(true)} className="md:hidden">
-            <Search size={26} />
-          </button>
+         {!showMobileSearch && (
+  <button onClick={() => setShowMobileSearch(true)} className="md:hidden">
+    <Search size={26} />
+  </button>
+)}
+
         </div>
       </nav>
 
