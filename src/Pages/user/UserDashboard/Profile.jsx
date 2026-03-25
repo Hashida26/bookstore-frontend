@@ -18,13 +18,16 @@ export default function Profile() {
 
   /* ================= LOAD USER ================= */
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedUser = localStorage.getItem("user");
 
-    if (storedUser) {
-      setFormData(storedUser);
+  if (storedUser) {
+    try {
+      setFormData(JSON.parse(storedUser));
+    } catch (err) {
+      console.error("Invalid JSON:", err);
     }
-  }, []);
-
+  }
+}, []);
   /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
     setFormData({
