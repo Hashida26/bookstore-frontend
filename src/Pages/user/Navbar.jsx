@@ -57,7 +57,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 font-semibold"
               >
                 <User size={18} />
-                {user}
+               {user?.username}
               </button>
 
               <div
