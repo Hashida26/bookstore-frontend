@@ -1,17 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-/* =======================
-   PROFILE COMPONENT
-======================= */
 export default function Profile() {
 
-  /* =======================
-     PROFILE STATE
-  ======================= */
-  const [profile, setProfile] = useState({
-    username: "Hashida Haris K",
-    email: "hashida@gmail.com",
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
     phone: "",
     whatsapp: "",
     address: "",
@@ -20,16 +14,26 @@ export default function Profile() {
     pincode: "",
   });
 
-  const [formData, setFormData] = useState(profile);
   const [errors, setErrors] = useState({});
 
-  /* =======================
-     HANDLERS
-  ======================= */
+  /* ================= LOAD USER ================= */
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (storedUser) {
+      setFormData(storedUser);
+    }
+  }, []);
+
+  /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  /* ================= VALIDATION ================= */
   const validate = () => {
     let newErrors = {};
 
@@ -49,143 +53,100 @@ export default function Profile() {
     return Object.keys(newErrors).length === 0;
   };
 
+  /* ================= SAVE ================= */
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validate()) return;
 
-    setProfile(formData);
+    // ✅ Save updated data
+    localStorage.setItem("user", JSON.stringify(formData));
 
     Swal.fire({
       icon: "success",
       title: "Profile Updated",
-      text: "Your profile has been updated successfully",
+      text: "Saved successfully",
       confirmButtonColor: "#15803d",
     });
   };
 
-  /* =======================
-     UI
-  ======================= */
+  /* ================= UI ================= */
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
 
-      {/* ================= INSTAGRAM STYLE PROFILE CARD ================= */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      {/* PROFILE CARD */}
+      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
 
-        {/* COVER */}
         <div className="h-28 bg-gradient-to-r from-green-700 to-green-500"></div>
 
-        {/* CONTENT */}
         <div className="px-6 pb-6">
 
-          {/* AVATAR */}
-          <div className="-mt-12 flex justify-center sm:justify-start">
-            <div className="w-24 h-24 rounded-full bg-white border-4 border-white shadow-md flex items-center justify-center text-3xl font-semibold text-green-700">
-              {profile.username.charAt(0)}
+          <div className="-mt-12 flex">
+            <div className="w-24 h-24 rounded-full bg-white border-4 flex items-center justify-center text-3xl font-semibold text-green-700">
+              {formData.username?.charAt(0) || "U"}
             </div>
           </div>
 
-          {/* NAME & EMAIL */}
-          <div className="mt-3 text-center sm:text-left">
-            <h3 className="text-[16px] font-semibold text-gray-800">
-              {profile.username}
+          <div className="mt-3">
+            <h3 className="font-semibold text-gray-800">
+              {formData.username || "No Name"}
             </h3>
-            <p className="text-[13px] text-gray-500">
-              {profile.email}
+            <p className="text-gray-500 text-sm">
+              {formData.email || "No Email"}
             </p>
           </div>
 
-          {/* STATS */}
-          <div className="mt-5 flex justify-center sm:justify-start gap-6 text-[13px]">
-            <Stat label="Phone" value={profile.phone || "—"} />
-            <Stat label="WhatsApp" value={profile.whatsapp || "—"} />
-            <Stat label="Pin" value={profile.pincode || "—"} />
+          <div className="mt-5 flex gap-6 text-sm">
+            <Stat label="Phone" value={formData.phone || "—"} />
+            <Stat label="WhatsApp" value={formData.whatsapp || "—"} />
+            <Stat label="Pin" value={formData.pincode || "—"} />
           </div>
 
-          {/* ADDRESS */}
-          {profile.address && (
-            <div className="mt-4 text-[13px] text-gray-600 flex items-start gap-2 max-w-xl">
+          {formData.address && (
+            <div className="mt-4 text-sm text-gray-600 flex gap-2">
               <span>📍</span>
               <p>
-                {profile.address}, {profile.city}, {profile.state}
+                {formData.address}, {formData.city}, {formData.state}
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ================= EDIT FORM ================= */}
-      <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
+      {/* FORM */}
+      <div className="bg-gray-50 border rounded-2xl">
 
         <div className="bg-[#48882E] text-white px-6 py-3">
-          <h2 className="text-[14px] font-semibold">Edit Profile</h2>
+          Edit Profile
         </div>
 
         <form className="p-6 space-y-6" onSubmit={handleSubmit}>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <Field
-              label="Username"
-              name="username"
-              value={formData.username}
-              error={errors.username}
-              onChange={handleChange}
-            />
-            <Field
-              label="Phone"
-              name="phone"
-              value={formData.phone}
-              error={errors.phone}
-              onChange={handleChange}
-            />
+            <Field name="username" value={formData.username} error={errors.username} onChange={handleChange} label="Username" />
+            <Field name="phone" value={formData.phone} error={errors.phone} onChange={handleChange} label="Phone" />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <Field
-              label="WhatsApp"
-              name="whatsapp"
-              value={formData.whatsapp}
-              onChange={handleChange}
-            />
-            <Field
-              label="Email"
-              name="email"
-              value={formData.email}
-              error={errors.email}
-              onChange={handleChange}
-            />
+            <Field name="whatsapp" value={formData.whatsapp} onChange={handleChange} label="WhatsApp" />
+            <Field name="email" value={formData.email} error={errors.email} onChange={handleChange} label="Email" />
           </div>
 
-          <div>
-            <label className="block text-[12px] font-medium text-gray-600 mb-1">
-              Address
-            </label>
-            <textarea
-              rows="3"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-3 py-2 text-[13px] rounded-sm focus:ring-1 focus:ring-green-700"
-            />
-          </div>
+          <textarea
+            name="address"
+            value={formData.address || ""}
+            onChange={handleChange}
+            placeholder="Address"
+            className="w-full border px-3 py-2 text-sm"
+          />
 
           <div className="grid md:grid-cols-3 gap-6">
-            <Field label="City" name="city" value={formData.city} onChange={handleChange} />
-            <Field label="State" name="state" value={formData.state} onChange={handleChange} />
-            <Field
-              label="Pincode"
-              name="pincode"
-              value={formData.pincode}
-              error={errors.pincode}
-              onChange={handleChange}
-            />
+            <Field name="city" value={formData.city} onChange={handleChange} label="City" />
+            <Field name="state" value={formData.state} onChange={handleChange} label="State" />
+            <Field name="pincode" value={formData.pincode} error={errors.pincode} onChange={handleChange} label="Pincode" />
           </div>
 
-          <button
-            type="submit"
-            className="px-8 py-2 bg-[#48882E] text-white text-[13px] rounded-sm hover:bg-gray-800 transition"
-          >
+          <button className="px-6 py-2 bg-green-700 text-white">
             Save Changes
           </button>
 
@@ -195,29 +156,25 @@ export default function Profile() {
   );
 }
 
-/* =======================
-   SMALL COMPONENTS
-======================= */
+/* COMPONENTS */
 
 const Stat = ({ label, value }) => (
-  <div className="text-center">
-    <p className="font-semibold text-gray-800">{value}</p>
-    <p className="text-gray-500 text-[12px]">{label}</p>
+  <div>
+    <p className="font-semibold">{value}</p>
+    <p className="text-gray-500 text-xs">{label}</p>
   </div>
 );
 
 const Field = ({ label, name, value, error, onChange }) => (
   <div>
-    <label className="block text-[12px] font-medium text-gray-600 mb-1">
-      {label}
-    </label>
+    <label className="text-xs text-gray-600">{label}</label>
     <input
       type="text"
       name={name}
-      value={value}
+      value={value || ""}
       onChange={onChange}
-      className="w-full border border-gray-300 px-3 py-2 text-[13px] rounded-sm focus:ring-1 focus:ring-green-700"
+      className="w-full border px-3 py-2 text-sm"
     />
-    {error && <p className="text-[11px] text-red-500 mt-1">{error}</p>}
+    {error && <p className="text-red-500 text-xs">{error}</p>}
   </div>
 );

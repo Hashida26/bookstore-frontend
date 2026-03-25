@@ -49,11 +49,21 @@ onSubmit={async (values, { setSubmitting }) => {
     localStorage.setItem("accessToken", res.data.accessToken);
     localStorage.setItem("refreshToken", res.data.refreshToken);
     localStorage.setItem("role", res.data.role);
-localStorage.setItem("user", res.data.name);
-localStorage.setItem("email", res.data.email); // optional but useful
-setUser(res.data.name);   
-// username
+ const userData = {
+      username: res.data.name,
+      email: res.data.email,
+      phone: res.data.phone || "",
+      whatsapp: res.data.whatsapp || "",
+      address: res.data.address || "",
+      city: res.data.city || "",
+      state: res.data.state || "",
+      pincode: res.data.pincode || "",
+    };
 
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    // Context (optional)
+    setUser(userData);
     navigate("/");
   } catch (err) {
     alert("Invalid email or password");
